@@ -7,9 +7,9 @@ using RESTful_API_Demo.Entities;
 
 namespace RESTful_API_Demo.Data
 {
-    public class RouteDBContext : DbContext
+    public class RoutineDBContext : DbContext
     {
-        public RouteDBContext(DbContextOptions<RouteDBContext> options)
+        public RoutineDBContext(DbContextOptions<RoutineDBContext> options)
             : base(options)
         {
         }

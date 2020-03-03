@@ -10,9 +10,9 @@ namespace RESTful_API_Demo.Services
 {
     public class CompanyRepository : ICompanyRepository
     {
-        private readonly RouteDBContext context;
+        private readonly RoutineDBContext context;
 
-        public CompanyRepository(RouteDBContext context)
+        public CompanyRepository(RoutineDBContext context)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
