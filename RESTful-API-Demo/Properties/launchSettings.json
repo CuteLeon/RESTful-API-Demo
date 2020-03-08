@@ -20,6 +20,7 @@
     "RESTful_API_Demo": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "api/companies",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

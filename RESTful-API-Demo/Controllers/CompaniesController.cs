@@ -19,6 +19,8 @@ namespace RESTful_API_Demo.Controllers
     ///     4、错误状态代码的问题详细信息
     /// </document>
     [ApiController]
+    // [Route("api/[controller]")]
+    [Route("api/companies")]
     public class CompaniesController : ControllerBase
     {
         private readonly ICompanyRepository companyRepository;
@@ -34,7 +36,18 @@ namespace RESTful_API_Demo.Controllers
         public async Task<IActionResult> GetCompanies()
         {
             var companies = await this.companyRepository.GetCompaniesAsync();
-            return new JsonResult(companies);
+            return this.Ok(companies);
+        }
+
+        [HttpGet("{companyId}")]
+        public async Task<IActionResult> GetCompanies(Guid companyId)
+        {
+            var company = await this.companyRepository.GetCompanyAsync(companyId);
+            if (company == null)
+            {
+                return this.NotFound();
+            }
+            return this.Ok(company);
         }
     }
 }
