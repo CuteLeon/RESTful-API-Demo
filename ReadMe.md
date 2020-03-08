@@ -95,11 +95,11 @@ post /Book/CSharpBook
 
 ​	合理使用HTTP的动词，并返回对应的状态代码；可以对同一个URI使用不同的HTTP动作执行不同的操作。
 
-- GET => 获取资源
-- POST => 创建资源
-- PUT => 替换资源（使用客户端发送的全部数据）
-- PATCH => 更新资源（使用客户端发送的部分数据）
-- DELETE => 删除资源
+- GET [QueryString] => 获取资源
+- POST [Body] => 创建资源
+- PUT [Body] => 替换资源（使用客户端发送的全部数据）传输完整的资源数据，如果资源不存则自动创建
+- PATCH [Body] => 更新资源（使用客户端发送的部分数据）传输需要更新的字段及数据的键值对
+- DELETE [QueryString] => 删除资源
 
 ```
 get /Books?name=CSharpBook
@@ -170,4 +170,3 @@ get /companies/{companyid}/employees/{employessId}
 ```
 get /api/users?orderby=name&count=20
 ```
-
