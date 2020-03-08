@@ -170,3 +170,61 @@ get /companies/{companyid}/employees/{employessId}
 ```
 get /api/users?orderby=name&count=20
 ```
+
+# 状态码
+
+​	请求是否成功了？
+
+​	如果失败了，谁将为失败负责？
+
+## 1XX
+
+​	信息性状态码，Web API 并不使用。
+
+## 2XX
+
+​	执行成功。
+
+​	200：OK 执行成功
+
+​	201：Created 创建资源成功
+
+​	204：NoContent 执行成功但不应该返回任何结果，例如删除操作
+
+## 3XX
+
+​	重定向
+
+## 4XX
+
+​	客户端错误。
+
+​	400：BadRequest 请求错误
+
+​	401：Unauthorized 没有提供授权信息或授权信息错误
+
+​	403：Forbidden 身份认证成功，但仍禁止访问此资源
+
+​	404：NotFound 请求的资源不存在
+
+​	405：MethodNotAllowed 使用不被支持的HTTP方法发送请求到资源
+
+​	406：NotAcceptable API消费者的表述格式并不被WebAPI所支持，且API不会提供默认的表述格式
+
+​	409：Conflict 请求与服务器当前状态冲突。通常指更新资源时发生的冲突，用来处理并发问题的状态码
+
+​	415：UnsupportedMediaType API不支持媒体类型
+
+​	422：UnprocessableEntity 服务器理解媒体类型但是仍无法处理此实体数据，用于表示实体数据验证的错误
+
+## 5XX
+
+​	服务器的故障
+
+# 错误
+
+​	通常有API消费者引起的Error，API消费者传输的数据不合理，API就回正常的拒绝请求并返回 4XX 状态代码。并不影响API的可用性。
+
+# 故障
+
+​	合理的请求仍无法被响应，由服务端本身引起，返回5XX的状态代码。会对API整体可用性造成影响。
