@@ -130,3 +130,43 @@ Response:
 
 ​	Level 3 引入了可发现性(Discoverability)，它可以使协议拥有自我描述(Self-documenting)的能力。
 
+# 对外合约
+
+## API消费者的三个概念
+
+1. 资源的标识
+2. HTTP方法
+3. 有效载荷（Payload）（可选）
+
+## 使用名称，而非动词
+
+​	使用名词访问资源，使用HTTP动词描述动作。
+
+```
+错误：/api/getusers
+URI里出现了get动词；
+正确：get /api/user
+应该使用HTTP动词GET表述；
+```
+
+## URI可读
+
+​	就像变量命名规范一样，URI应尽量友好且简短。
+
+## 要体现资源的结构和关系
+
+​	使API具有可预测性和一致性。
+
+```
+get /companies/{companyId}
+get /companies/{companyid}/employees
+get /companies/{companyid}/employees/{employessId}
+```
+
+## 自定义查询
+
+​	URI内只可包含名词，所以一些自定义查询参数可以在QueryString中。
+
+```
+get /api/users?orderby=name&count=20
+```
