@@ -93,7 +93,7 @@ post /Book/CSharpBook
 
 ## Level_2：HTTP动词
 
-​	合理使用HTTP的动词，并返回对应的状态代码
+​	合理使用HTTP的动词，并返回对应的状态代码；可以对同一个URI使用不同的HTTP动作执行不同的操作。
 
 - GET => 获取资源
 - POST => 创建资源
@@ -170,3 +170,4 @@ get /companies/{companyid}/employees/{employessId}
 ```
 get /api/users?orderby=name&count=20
 ```
+
