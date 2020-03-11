@@ -12,7 +12,7 @@ namespace RESTful_API_Demo.Profiles
             this.CreateMap<Employee, EmployeeDTO>()
                 .ForMember(
                     dest => dest.Name,
-                    option => option.MapFrom(src => $"{src.FirstName}{src.LastName}"))
+                    option => option.MapFrom(src => $"{src.FirstName}·{src.LastName}"))
                 .ForMember(
                     dest => dest.Age,
                     option => option.MapFrom(src => DateTime.Now.Year - src.DateOfBirth.Year));

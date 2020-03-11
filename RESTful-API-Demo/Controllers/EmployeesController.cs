@@ -37,5 +37,18 @@ namespace RESTful_API_Demo.Controllers
             var employeeDTOs = this.mapper.Map<IEnumerable<EmployeeDTO>>(employees);
             return this.Ok(employeeDTOs);
         }
+
+        [Route("{employeeId}")]
+        public async Task<ActionResult<EmployeeDTO>> GetEmployeeForCompany(Guid companyId, Guid employeeId)
+        {
+            var employee = await this.companyRepository.GetEmployeeAsync(companyId, employeeId);
+            if (employee == null)
+            {
+                return this.NotFound();
+            }
+
+            var employeeDTO = mapper.Map<EmployeeDTO>(employee);
+            return this.Ok(employeeDTO);
+        }
     }
 }
