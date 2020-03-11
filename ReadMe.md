@@ -266,3 +266,11 @@ get /api/users?orderby=name&count=20
 # 父子关系的资源
 
 ​	在路由特性配置出父子资源的ID即可。
+
+# 处理故障
+
+​	Try {...} Catch 和 throw 对性能影响比较大。
+
+​	当项目的 ASPNETCORE_ENVIRONMENT 环境变量值为 "Development" 时，API 抛出的异常将会发送给客户端，这是无用但危险的，将此环境变量改为 "Production" 即生产环境即可。
+
+​	可以使用 app.UseExceptionHandler(appBuilder) 配置全局异常处理表达式；
