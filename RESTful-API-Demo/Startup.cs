@@ -1,3 +1,5 @@
+using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -29,6 +31,9 @@ namespace RESTful_API_Demo
                 // 默认使用 Json，添加支持 XML 格式，自动根据 Accept Header 返回对应格式
                 setup.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
             });
+
+            // 使 AutoMapper 自动发现应用域内的类型映射配置类 (Profile)
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddDbContext<RoutineDBContext>(option =>
