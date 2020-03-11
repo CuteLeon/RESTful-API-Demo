@@ -278,3 +278,27 @@ get /api/users?orderby=name&count=20
 # HTTP HEAD
 
 ​	Head 和 Get 几乎一样，但是 Head 不应该返回响应的 Body，即 Head 没有 Payload。Head 可以获取资源的一些信息。
+
+# 过滤和搜索
+
+​	过滤和搜索的条件参数不属于资源。
+
+## 如何给API传输数据
+
+​	在 ASP.NET CORE 可以通过特性修饰参数来声明参数从哪里取值。
+
+- [FromBody]：请求的Body => 推断复杂类型参数
+- [FromForm]：请求的Body的Form表单 => 推断 IFormFile 和 IFormFileCollection
+- [FromHeader]：请求的Header 
+- [FromQuery] ： 请求的Query字符串 => 推断路由模板中和参数名称一致的数据
+- [FromRoute] ： 请求的路由数据 => 推断其他参数
+- [FromService] ： 依赖注入的服务
+
+## 过滤
+
+​	使用限定条件返回过滤后的数据集合。将需要过滤的字段名称及过滤的值一起传给API，将匹配/不匹配的数据移除，过滤条件之间为"&&"关系；
+
+## 搜索
+
+​	根据预定义的规则，将符合条件的数据添加到集合里。搜索条件之间为"||"关系。
+

@@ -72,15 +72,22 @@ namespace RESTful_API_Demo.Services
             return await this.context.Companies.AnyAsync(x => x.Id == companyId);
         }
 
-        public async Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId)
+        public async Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, string genderDisplay)
         {
             if (Guid.Empty == companyId)
                 throw new ArgumentNullException(nameof(companyId));
 
-            return await this.context.Employees
-                .Where(x => x.CompanyId == companyId)
-                .OrderBy(x => x.EmployeeNo)
-                .ToListAsync();
+            var result = this.context.Employees
+                .Where(x => x.CompanyId == companyId);
+
+            if (!string.IsNullOrEmpty(genderDisplay) &&
+                Enum.TryParse<Gender>(genderDisplay.Trim(), out var gender))
+            {
+                result = result.Where(x => x.Gender == gender);
+            }
+
+            result = result.OrderBy(x => x.EmployeeNo);
+            return await result.ToListAsync();
         }
 
         public async Task<Employee> GetEmployeeAsync(Guid companyId, Guid employeeId)

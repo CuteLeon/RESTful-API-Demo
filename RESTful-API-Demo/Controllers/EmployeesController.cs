@@ -26,14 +26,16 @@ namespace RESTful_API_Demo.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployees(Guid companyId)
+        public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployees(
+            [FromRoute]Guid companyId,
+            [FromQuery(Name = "gender")]string genderDisplay)
         {
             if (!await this.companyRepository.CompanyExistAsync(companyId))
             {
                 return this.NotFound();
             }
 
-            var employees = await this.companyRepository.GetEmployeesAsync(companyId);
+            var employees = await this.companyRepository.GetEmployeesAsync(companyId, genderDisplay);
             var employeeDTOs = this.mapper.Map<IEnumerable<EmployeeDTO>>(employees);
             return this.Ok(employeeDTOs);
         }
