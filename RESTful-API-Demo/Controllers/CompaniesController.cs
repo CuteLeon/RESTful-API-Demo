@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using RESTful_API_Demo.DTOS;
 using RESTful_API_Demo.Services;
 
 namespace RESTful_API_Demo.Controllers
@@ -36,7 +39,14 @@ namespace RESTful_API_Demo.Controllers
         public async Task<IActionResult> GetCompanies()
         {
             var companies = await this.companyRepository.GetCompaniesAsync();
-            return this.Ok(companies);
+            var companyDtos = companies
+                .Select(company => new CompanyDTO()
+                {
+                    Id = company.Id,
+                    Name = company.Name,
+                })
+                .ToList();
+            return this.Ok(companyDtos);
         }
 
         [HttpGet("{companyId}")]

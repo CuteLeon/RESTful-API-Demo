@@ -247,4 +247,15 @@ get /api/users?orderby=name&count=20
 
 ​	ASP.NET Core 对应的是 OutPutFormatters。
 
-​	
+# 数据模型
+
+​	模型分离为不同的类型，可以使系统更加健壮、可靠、易于进化。将数据库和API消费者同时对数据库的依赖解耦。
+
+## 实体模型-Entity Model
+
+​	Entity Framework 使用的数据模型，用于数据库交互；
+
+## 外部模型-DTO (Data Transfer Object)
+
+​	数据交换模型，用于沟通外部和内部的数据模型；
+
