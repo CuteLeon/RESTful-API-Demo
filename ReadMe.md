@@ -228,3 +228,23 @@ get /api/users?orderby=name&count=20
 # 故障
 
 ​	合理的请求仍无法被响应，由服务端本身引起，返回5XX的状态代码。会对API整体可用性造成影响。
+
+# 内容协商
+
+​	RESTful API 并不强制约束使用 JSON，只是JSON较为常用。内容协商时，针对一个响应，当有多种表述格式可用时，选取最佳的一个表述。
+
+## 声明请求的表述格式
+
+​	API消费者发送的请求头 Content-Type Header 用于声明请求附带数据的表述格式，例如 "application/json" 或 "application/xml"。
+
+## 要求响应的表述格式
+
+​	当不同的API消费者需要使用不同的表述格式时，可以在API消费者发送的请求头 AcceptHeader 里的 MediaType(媒体类型) 值设置为 "application/json" 或 "application/xml" 以要求API返回对应表述格式的数据。
+
+​	当不指定媒体类型时，API可以返回默认的表述格式的数据。
+
+​	当指定的媒体类型不被服务端理解时，服务端可以返回 406 错误代码，或者使用默认表述格式的数据。
+
+​	ASP.NET Core 对应的是 OutPutFormatters。
+
+​	
