@@ -259,3 +259,6 @@ get /api/users?orderby=name&count=20
 
 ​	数据交换模型，用于沟通外部和内部的数据模型；
 
+# ActionResult\<T\>
+
+​	使用 ActionResult\<T\> 代替 IActionResult ，以明确API的响应数据类型；

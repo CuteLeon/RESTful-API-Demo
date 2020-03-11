@@ -36,7 +36,7 @@ namespace RESTful_API_Demo.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCompanies()
+        public async Task<ActionResult<IEnumerable<CompanyDTO>>> GetCompanies()
         {
             var companies = await this.companyRepository.GetCompaniesAsync();
             var companyDtos = companies
