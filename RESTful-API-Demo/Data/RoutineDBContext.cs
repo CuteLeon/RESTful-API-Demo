@@ -46,6 +46,28 @@ namespace RESTful_API_Demo.Data
                     Name = "Alibaba",
                     Introduction = "Fubao Company",
                 });
+
+            modelBuilder.Entity<Employee>().HasData(
+                new Employee
+                {
+                    Id = Guid.Parse("4b501cb3-d168-4cc0-b375-48fb33f318a4"),
+                    CompanyId = Guid.Parse("6fb600c1-9011-4fd7-9234-881379716440"),
+                    DateOfBirth = new DateTime(1986, 11, 4),
+                    EmployeeNo = "G003",
+                    FirstName = "Mary",
+                    LastName = "King",
+                    Gender = Gender.Female,
+                },
+                new Employee
+                {
+                    Id = Guid.Parse("7eaa532c-1be5-472c-a738-94fd26e5fad6"),
+                    CompanyId = Guid.Parse("6fb600c1-9011-4fd7-9234-881379716440"),
+                    DateOfBirth = new DateTime(1977, 4, 6),
+                    EmployeeNo = "G097",
+                    FirstName = "Kevin",
+                    LastName = "Richardson",
+                    Gender = Gender.Male,
+                });
         }
     }
 }

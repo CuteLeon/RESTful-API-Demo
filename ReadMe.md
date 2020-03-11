@@ -262,3 +262,7 @@ get /api/users?orderby=name&count=20
 # ActionResult\<T\>
 
 ​	使用 ActionResult\<T\> 代替 IActionResult ，以明确API的响应数据类型；
+
+# 父子关系的资源
+
+​	在路由特性配置出父子资源的ID即可。
