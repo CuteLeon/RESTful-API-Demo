@@ -274,3 +274,7 @@ get /api/users?orderby=name&count=20
 ​	当项目的 ASPNETCORE_ENVIRONMENT 环境变量值为 "Development" 时，API 抛出的异常将会发送给客户端，这是无用但危险的，将此环境变量改为 "Production" 即生产环境即可。
 
 ​	可以使用 app.UseExceptionHandler(appBuilder) 配置全局异常处理表达式；
+
+# HTTP HEAD
+
+​	Head 和 Get 几乎一样，但是 Head 不应该返回响应的 Body，即 Head 没有 Payload。Head 可以获取资源的一些信息。
