@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RESTful_API_Demo.DTOS;
+using RESTful_API_Demo.Parameters;
 using RESTful_API_Demo.Services;
 
 namespace RESTful_API_Demo.Controllers
@@ -42,10 +42,11 @@ namespace RESTful_API_Demo.Controllers
 
         [HttpGet]
         [HttpHead]
-        public async Task<ActionResult<IEnumerable<CompanyDTO>>> GetCompanies()
+        public async Task<ActionResult<IEnumerable<CompanyDTO>>> GetCompanies(
+            [FromQuery]CompanyParameter parameter)
         {
-            var companies = await this.companyRepository.GetCompaniesAsync();
-            var companyDtos = mapper.Map<IEnumerable<CompanyDTO>>(companies);
+            var companies = await this.companyRepository.GetCompaniesAsync(parameter);
+            var companyDtos = this.mapper.Map<IEnumerable<CompanyDTO>>(companies);
             return this.Ok(companyDtos);
         }
 
@@ -58,7 +59,7 @@ namespace RESTful_API_Demo.Controllers
                 return this.NotFound();
             }
 
-            var companyDto = mapper.Map<CompanyDTO>(company);
+            var companyDto = this.mapper.Map<CompanyDTO>(company);
             return this.Ok(companyDto);
         }
     }

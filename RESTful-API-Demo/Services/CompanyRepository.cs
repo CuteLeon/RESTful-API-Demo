@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RESTful_API_Demo.Data;
 using RESTful_API_Demo.Entities;
+using RESTful_API_Demo.Parameters;
 
 namespace RESTful_API_Demo.Services
 {
@@ -17,8 +18,28 @@ namespace RESTful_API_Demo.Services
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<Company>> GetCompaniesAsync()
-            => await this.context.Companies.ToListAsync();
+        public async Task<IEnumerable<Company>> GetCompaniesAsync(CompanyParameter parameter)
+        {
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+            var result = this.context.Companies.AsQueryable();
+            if (!string.IsNullOrEmpty(parameter.CompanyName))
+            {
+                result = result.Where(x => x.Name.Contains(parameter.CompanyName));
+            }
+
+            if (!string.IsNullOrEmpty(parameter.SearchTerm))
+            {
+                result = result.Where(x =>
+                    x.Name.Contains(parameter.SearchTerm) ||
+                    x.Introduction.Contains(parameter.SearchTerm));
+            }
+
+            return await result.ToListAsync();
+        }
 
         public async Task<Company> GetCompanyAsync(Guid companyId)
         {
