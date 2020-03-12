@@ -332,9 +332,13 @@ get /api/users?orderby=name&count=20
 
 ​	常用的三种输入数据验证规则定义方法：
 
-1. DataAnnotations
-2. 自定义Attribute
-3. 实现IValidatableObject接口
+### DataAnnotations
+
+​	应用 System.ComponentModel.DataAnnotations 名称空间，并使用其中的特性修饰模型中的属性；
+
+### 自定义Attribute
+
+### 实现IValidatableObject接口
 
 ## 按验证规则进行检查
 
