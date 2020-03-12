@@ -66,6 +66,7 @@ namespace RESTful_API_Demo.Services
             if (company == null)
                 throw new ArgumentNullException(nameof(company));
 
+            company.Id = Guid.NewGuid();
             this.context.Companies.Add(company);
         }
 

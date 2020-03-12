@@ -14,6 +14,8 @@ namespace RESTful_API_Demo.Profiles
                 .ForMember(
                 dest => dest.Name,
                 option => option.MapFrom(src => src.Name));
+
+            this.CreateMap<CompanyCreateDTO, Company>();
         }
     }
 }
