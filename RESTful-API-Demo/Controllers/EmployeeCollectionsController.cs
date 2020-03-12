@@ -66,7 +66,7 @@ namespace RESTful_API_Demo.Controllers
                 return this.BadRequest();
             }
 
-            var employees = await this.companyRepository.GetEmployeesAsync(employeeIds);
+            var employees = await this.companyRepository.GetEmployeesAsync(companyId, employeeIds);
             if (employees.Count() != employeeIds.Count())
             {
                 return NotFound();

@@ -17,7 +17,7 @@ namespace RESTful_API_Demo.Services
         Task<bool> CompanyExistAsync(Guid companyId);
 
         Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, string genderDisplay, string keyword);
-        Task<IEnumerable<Employee>> GetEmployeesAsync(IEnumerable<Guid> employeeIds);
+        Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, IEnumerable<Guid> employeeIds);
         Task<Employee> GetEmployeeAsync(Guid companyId, Guid employeeId);
         void AddEmployee(Guid companyId, Employee employee);
         void UpdateEmployee(Employee employee);
