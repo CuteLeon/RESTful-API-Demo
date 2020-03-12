@@ -17,7 +17,7 @@ namespace RESTful_API_Demo.ValidationAttributes
 
             if (employeeCreateDTO.EmployeeNo == employeeCreateDTO.FirstName)
             {
-                return new ValidationResult("员工编号不可以等于名称！", new[] { nameof(employeeCreateDTO) });
+                return new ValidationResult(ErrorMessage, new[] { nameof(employeeCreateDTO) });
             }
 
             return ValidationResult.Success;

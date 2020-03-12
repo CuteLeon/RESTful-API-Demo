@@ -6,7 +6,7 @@ using RESTful_API_Demo.ValidationAttributes;
 
 namespace RESTful_API_Demo.DTOS
 {
-    [EmployeeCustomValidation]
+    [EmployeeCustomValidation(ErrorMessage = "员工编号不可以和名称相同！")]
     public class EmployeeCreateDTO : IValidatableObject
     {
         [Display(Name = "名称")]
