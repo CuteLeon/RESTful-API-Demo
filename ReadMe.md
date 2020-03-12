@@ -344,8 +344,18 @@ get /api/users?orderby=name&count=20
 
 ​	ModelState 对象是一个字典，既包含Model的状态，也包含Model的绑定验证信息。也包含针对每个提交的属性值的错误信息的集合。每当有请求进来的时候，定义好的验证规则就会被检查。
 
-​	如果属性类型错误或验证不通过 ModelState.IsValid() 就回返回 False。
+​	如果属性类型错误或验证不通过 ModelState.IsValid 就回返回 False。
 
 ​	验证错误返回的状态代码：422-UnprocessableEntity
 
 ## 报告验证的错误
+
+​	[ApiController] 特性会自动完成以下逻辑：
+
+```csharp
+if (!this.ModelState.IsValid)
+{
+	return this.UnprocessableEntity(this.ModelState);
+}
+```
+
