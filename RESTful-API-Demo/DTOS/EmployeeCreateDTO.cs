@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using RESTful_API_Demo.Entities;
+using RESTful_API_Demo.ValidationAttributes;
 
 namespace RESTful_API_Demo.DTOS
 {
+    [EmployeeCustomValidation]
     public class EmployeeCreateDTO : IValidatableObject
     {
         [Display(Name = "名称")]
