@@ -128,6 +128,17 @@ namespace RESTful_API_Demo.Services
             return await result.ToListAsync();
         }
 
+        public async Task<IEnumerable<Employee>> GetEmployeesAsync(IEnumerable<Guid> employeeIds)
+        {
+            if (employeeIds == null)
+                throw new ArgumentNullException(nameof(employeeIds));
+
+            return await this.context.Employees
+                .Where(x => employeeIds.Contains(x.Id))
+                .OrderBy(x => x.EmployeeNo)
+                .ToListAsync();
+        }
+
         public async Task<Employee> GetEmployeeAsync(Guid companyId, Guid employeeId)
         {
             if (Guid.Empty == companyId)

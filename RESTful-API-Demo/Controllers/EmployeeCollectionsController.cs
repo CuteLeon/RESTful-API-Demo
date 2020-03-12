@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RESTful_API_Demo.DTOS;
 using RESTful_API_Demo.Entities;
+using RESTful_API_Demo.ModelBinders;
 using RESTful_API_Demo.Services;
 
 namespace RESTful_API_Demo.Controllers
@@ -43,6 +44,33 @@ namespace RESTful_API_Demo.Controllers
                 this.companyRepository.AddEmployee(companyId, employee);
             }
             await this.companyRepository.SaveAsync();
+
+            var employeeDTOs = this.mapper.Map<IEnumerable<EmployeeDTO>>(employees);
+            var employeeIds = string.Join(",", employees.Select(x => x.Id));
+            return this.CreatedAtRoute(
+                nameof(GetEmployeesForCompany),
+                new { companyId = companyId, employeeIds = employeeIds },
+                employeeDTOs);
+        }
+
+        [HttpGet("{employeeIds}", Name = nameof(GetEmployeesForCompany))]
+        public async Task<ActionResult<EmployeeDTO>> GetEmployeesForCompany(
+            [FromRoute]
+            Guid companyId,
+            [FromRoute]
+            [ModelBinder(BinderType =typeof(ArrayModelBinder))]
+            IEnumerable<Guid> employeeIds)
+        {
+            if (employeeIds == null)
+            {
+                return this.BadRequest();
+            }
+
+            var employees = await this.companyRepository.GetEmployeesAsync(employeeIds);
+            if (employees.Count() != employeeIds.Count())
+            {
+                return NotFound();
+            }
 
             var employeeDTOs = this.mapper.Map<IEnumerable<EmployeeDTO>>(employees);
             return this.Ok(employeeDTOs);
