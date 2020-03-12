@@ -141,6 +141,7 @@ namespace RESTful_API_Demo.Services
             if (employee == null)
                 throw new ArgumentNullException(nameof(employee));
 
+            employee.Id = Guid.NewGuid();
             employee.CompanyId = companyId;
             this.context.Employees.Add(employee);
         }

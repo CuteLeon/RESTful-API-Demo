@@ -16,6 +16,8 @@ namespace RESTful_API_Demo.Profiles
                 .ForMember(
                     dest => dest.Age,
                     option => option.MapFrom(src => DateTime.Now.Year - src.DateOfBirth.Year));
+
+            this.CreateMap<EmployeeCreateDTO, Employee>();
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RESTful_API_Demo.DTOS;
+using RESTful_API_Demo.Entities;
 using RESTful_API_Demo.Services;
 
 namespace RESTful_API_Demo.Controllers
@@ -41,7 +42,7 @@ namespace RESTful_API_Demo.Controllers
             return this.Ok(employeeDTOs);
         }
 
-        [Route("{employeeId}")]
+        [Route("{employeeId}"), ActionName(nameof(GetEmployeeForCompany))]
         public async Task<ActionResult<EmployeeDTO>> GetEmployeeForCompany(Guid companyId, Guid employeeId)
         {
             var employee = await this.companyRepository.GetEmployeeAsync(companyId, employeeId);
@@ -52,6 +53,26 @@ namespace RESTful_API_Demo.Controllers
 
             var employeeDTO = mapper.Map<EmployeeDTO>(employee);
             return this.Ok(employeeDTO);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<EmployeeDTO>> CreateEmployeeForCompany(
+            [FromRoute]Guid companyId,
+            [FromBody]EmployeeCreateDTO employeeCreateDTO)
+        {
+            if (!await companyRepository.CompanyExistAsync(companyId))
+            {
+                return this.NotFound();
+            }
+
+            var employee = this.mapper.Map<Employee>(employeeCreateDTO);
+            this.companyRepository.AddEmployee(companyId, employee);
+            await this.companyRepository.SaveAsync();
+            var employeeDTO = this.mapper.Map<EmployeeDTO>(employee);
+            return this.CreatedAtAction(
+                nameof(GetEmployeeForCompany),
+                new { companyId = companyId, employeeId = employee.Id },
+                employeeDTO);
         }
     }
 }
