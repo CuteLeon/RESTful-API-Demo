@@ -21,6 +21,7 @@ namespace RESTful_API_Demo.Profiles
                     option => option.MapFrom(src => src.Gender == Gender.Female ? "女" : "男"));
 
             this.CreateMap<EmployeeCreateDTO, Employee>();
+            this.CreateMap<EmployeeUpdateDTO, Employee>();
         }
     }
 }

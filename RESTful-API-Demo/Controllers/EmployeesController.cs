@@ -74,5 +74,26 @@ namespace RESTful_API_Demo.Controllers
                 new { companyId = companyId, employeeId = employee.Id },
                 employeeDTO);
         }
+
+        [HttpPut("{employeeId}")]
+        public async Task<ActionResult> UpdateEmployeeForCompany(Guid companyId, Guid employeeId, EmployeeUpdateDTO employeeUpdateDTO)
+        {
+            if (!await this.companyRepository.CompanyExistAsync(companyId))
+            {
+                return this.NotFound();
+            }
+
+            var employee = await this.companyRepository.GetEmployeeAsync(companyId, employeeId);
+            if (employee == null)
+            {
+                return this.NotFound();
+            }
+
+            this.mapper.Map(employeeUpdateDTO, employee);
+            this.companyRepository.UpdateEmployee(employee);
+            await this.companyRepository.SaveAsync();
+
+            return this.NoContent();
+        }
     }
 }
