@@ -15,7 +15,10 @@ namespace RESTful_API_Demo.Profiles
                     option => option.MapFrom(src => $"{src.FirstName}·{src.LastName}"))
                 .ForMember(
                     dest => dest.Age,
-                    option => option.MapFrom(src => DateTime.Now.Year - src.DateOfBirth.Year));
+                    option => option.MapFrom(src => DateTime.Now.Year - src.DateOfBirth.Year))
+                .ForMember(
+                    dest => dest.GenderDisplay,
+                    option => option.MapFrom(src => src.Gender == Gender.Female ? "女" : "男"));
 
             this.CreateMap<EmployeeCreateDTO, Employee>();
         }
