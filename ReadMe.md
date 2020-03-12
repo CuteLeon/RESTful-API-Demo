@@ -340,6 +340,8 @@ get /api/users?orderby=name&count=20
 
 ### 实现IValidatableObject接口
 
+​	模型类继承并实现接口 IValidatableObject，并在 Validate 方法中编写自定义的验证逻辑，将验证错误通过 yield return 返回；
+
 ## 按验证规则进行检查
 
 ​	ModelState 对象是一个字典，既包含Model的状态，也包含Model的绑定验证信息。也包含针对每个提交的属性值的错误信息的集合。每当有请求进来的时候，定义好的验证规则就会被检查。
