@@ -67,6 +67,14 @@ namespace RESTful_API_Demo.Services
                 throw new ArgumentNullException(nameof(company));
 
             company.Id = Guid.NewGuid();
+            if ((company.Employees?.Count ?? 0) > 0)
+            {
+                foreach (var employee in company.Employees)
+                {
+                    employee.Id = Guid.NewGuid();
+                }
+            }
+
             this.context.Companies.Add(company);
         }
 
