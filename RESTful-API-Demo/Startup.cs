@@ -29,9 +29,8 @@ namespace RESTful_API_Demo
             {
                 // 自动对无法接受的 Accept Header 返回 406 代码
                 setup.ReturnHttpNotAcceptable = true;
-                // 默认使用 Json，添加支持 XML 格式，自动根据 Accept Header 返回对应格式
-                setup.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
-            });
+            })
+                .AddXmlDataContractSerializerFormatters();
 
             // 使 AutoMapper 自动发现应用域内的类型映射配置类 (Profile)
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

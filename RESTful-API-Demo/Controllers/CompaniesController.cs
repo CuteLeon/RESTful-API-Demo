@@ -80,5 +80,12 @@ namespace RESTful_API_Demo.Controllers
                 new { companyId = company.Id },
                 companyDTO);
         }
+
+        [HttpOptions]
+        public async Task<ActionResult> GetCompaniesOptions()
+        {
+            Response.Headers.Add("Allow", "GET,POST,OPTIONS");
+            return this.Ok();
+        }
     }
 }

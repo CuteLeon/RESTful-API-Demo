@@ -281,6 +281,10 @@ get /api/users?orderby=name&count=20
 
 ​	Head 和 Get 几乎一样，但是 Head 不应该返回响应的 Body，即 Head 没有 Payload。Head 可以获取资源的一些信息。
 
+# HTTP OPTIONS
+
+​	由API消费者用于获取针对某个WebAPI的通信选项的信息。
+
 # 过滤和搜索
 
 ​	过滤和搜索的条件参数不属于资源。
