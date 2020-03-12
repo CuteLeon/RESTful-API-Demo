@@ -326,3 +326,22 @@ get /api/users?orderby=name&count=20
 
 > Patch 不是幂等的：加入一个集合每次Patch后追加记录，则不满足幂等性；
 
+# 输入验证和DataAnnotations
+
+## 定义验证规则
+
+​	常用的三种输入数据验证规则定义方法：
+
+1. DataAnnotations
+2. 自定义Attribute
+3. 实现IValidatableObject接口
+
+## 按验证规则进行检查
+
+​	ModelState 对象是一个字典，既包含Model的状态，也包含Model的绑定验证信息。也包含针对每个提交的属性值的错误信息的集合。每当有请求进来的时候，定义好的验证规则就会被检查。
+
+​	如果属性类型错误或验证不通过 ModelState.IsValid() 就回返回 False。
+
+​	验证错误返回的状态代码：422-UnprocessableEntity
+
+## 报告验证的错误
