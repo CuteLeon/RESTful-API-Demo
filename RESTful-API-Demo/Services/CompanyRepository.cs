@@ -66,14 +66,15 @@ namespace RESTful_API_Demo.Services
             if (company == null)
                 throw new ArgumentNullException(nameof(company));
 
-            company.Id = Guid.NewGuid();
-            if ((company.Employees?.Count ?? 0) > 0)
+            if (company.Id == Guid.Empty)
             {
-                foreach (var employee in company.Employees)
-                {
-                    employee.Id = Guid.NewGuid();
-                }
+                company.Id = Guid.NewGuid();
             }
+
+            _ = company.Employees
+                .Where(x => x.Id == Guid.Empty)
+                .Select(x => x.Id = Guid.NewGuid())
+                .ToArray();
 
             this.context.Companies.Add(company);
         }
@@ -162,7 +163,11 @@ namespace RESTful_API_Demo.Services
             if (employee == null)
                 throw new ArgumentNullException(nameof(employee));
 
-            employee.Id = Guid.NewGuid();
+            if (employee.Id == Guid.Empty)
+            {
+                employee.Id = Guid.NewGuid();
+            }
+
             employee.CompanyId = companyId;
             this.context.Employees.Add(employee);
         }
