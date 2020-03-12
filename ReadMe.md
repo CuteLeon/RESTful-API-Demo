@@ -338,6 +338,8 @@ get /api/users?orderby=name&count=20
 
 ### 自定义Attribute
 
+​	增加模型验证特性类继承自 ValidationAttribute 并编写 IsValid 方法内的验证逻辑；
+
 ### 实现IValidatableObject接口
 
 ​	模型类继承并实现接口 IValidatableObject，并在 Validate 方法中编写自定义的验证逻辑，将验证错误通过 yield return 返回；
