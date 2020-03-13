@@ -5,18 +5,26 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RESTful_API_Demo.Assists;
 using RESTful_API_Demo.Data;
+using RESTful_API_Demo.DTOS;
 using RESTful_API_Demo.Entities;
 using RESTful_API_Demo.Parameters;
+using RESTful_API_Demo.PropertyMappingServices;
 
 namespace RESTful_API_Demo.Services
 {
     public class CompanyRepository : ICompanyRepository
     {
         private readonly RoutineDBContext context;
+        private readonly IPropertyMappingService propertyMappingService;
 
-        public CompanyRepository(RoutineDBContext context)
+        public CompanyRepository(
+            RoutineDBContext context,
+            IPropertyMappingService propertyMappingService)
         {
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.context = context ??
+                throw new ArgumentNullException(nameof(context));
+            this.propertyMappingService = propertyMappingService ??
+                throw new ArgumentNullException(nameof(propertyMappingService)); ;
         }
 
         public async Task<PagedList<Company>> GetCompaniesAsync(CompanyParameter parameter)
@@ -134,15 +142,8 @@ namespace RESTful_API_Demo.Services
                     x.LastName.Contains(parameter.SearchTerm));
             }
 
-            if (!string.IsNullOrEmpty(parameter.OrderBy))
-            {
-                result = parameter.OrderBy.ToLower() switch
-                {
-                    "name" => result.OrderBy(x => x.FirstName).ThenBy(x => x.LastName),
-                    "employeeno" => result.OrderBy(x => x.EmployeeNo),
-                    "gender" => result.OrderBy(x => x.Gender),
-                };
-            }
+            var propertyMapping = this.propertyMappingService.GetPropertyMapping<EmployeeDTO, Employee>();
+            result = result.ApplySort(parameter.OrderBy, propertyMapping.PropertyMappingValueDictionary);
 
             return await result.ToListAsync();
         }

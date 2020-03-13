@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 using RESTful_API_Demo.Data;
+using RESTful_API_Demo.PropertyMappingServices;
 using RESTful_API_Demo.Services;
 
 namespace RESTful_API_Demo
@@ -66,6 +67,8 @@ namespace RESTful_API_Demo
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddPropertyMappingService();
+
             services.AddDbContext<RoutineDBContext>(option =>
             {
                 option.UseSqlite("Data Source=RestfulAPI.db");
