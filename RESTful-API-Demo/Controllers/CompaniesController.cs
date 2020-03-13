@@ -84,6 +84,7 @@ namespace RESTful_API_Demo.Controllers
                         nameof(GetCompanies),
                         new
                         {
+                            orderBy = parameter.OrderBy,
                             pageNumber = parameter.PageNumber - 1,
                             pageSize = parameter.PageSize,
                             companyName = parameter.CompanyName,
@@ -95,6 +96,7 @@ namespace RESTful_API_Demo.Controllers
                         nameof(GetCompanies),
                         new
                         {
+                            orderBy = parameter.OrderBy,
                             pageNumber = parameter.PageNumber + 1,
                             pageSize = parameter.PageSize,
                             companyName = parameter.CompanyName,
@@ -106,6 +108,7 @@ namespace RESTful_API_Demo.Controllers
                         nameof(GetCompanies),
                         new
                         {
+                            orderBy = parameter.OrderBy,
                             pageNumber = parameter.PageNumber,
                             pageSize = parameter.PageSize,
                             companyName = parameter.CompanyName,
