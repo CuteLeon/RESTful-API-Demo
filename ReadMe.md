@@ -366,3 +366,46 @@ if (!this.ModelState.IsValid)
 # 如果客户端负责创建资源
 
 ​	如果允许客户端创建资源，客户端可以生成URI，并使用PUT方法发送一个不对应任何资源的URI上。服务端在处理上述PUT请求时，如果对应的资源不存在，则创建资源；如果资源存在，则更新资源。所以PUT此时可以同时处理创建和替换；
+
+# HTTP PATCH
+
+​	局部更新。
+
+## JSON PATCH Operations
+
+### Add
+
+```json
+{ "op": "add", "path": "/biscuits/1", "value": { "name": "Ginger Nut" } }
+```
+
+### Remove
+
+```json
+{ "op": "remove", "path": "/biscuits" }
+{ "op": "remove", "path": "/biscuits/0" }
+```
+
+### Move
+
+```json
+{ "op": "move", "from": "/biscuits", "path": "/cookies" }
+```
+
+### Replace
+
+```json
+{ "op": "replace", "path": "/biscuits/0/name", "value": "Chocolate Digestive" }
+```
+
+### Copy
+
+```json
+{ "op": "copy", "from": "/bizcuits/0", "path": "/biscuits/1" }
+```
+
+### Test
+
+```json
+{ "op": "test", "path": "/best_biscuit/name", "value": "cChoco Leibniz" }
+```

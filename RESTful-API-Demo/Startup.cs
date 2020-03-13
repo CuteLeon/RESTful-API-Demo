@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Serialization;
 using RESTful_API_Demo.Data;
 using RESTful_API_Demo.Services;
 
@@ -32,11 +32,17 @@ namespace RESTful_API_Demo
                     // 自动对无法接受的 Accept Header 返回 406 代码
                     setup.ReturnHttpNotAcceptable = true;
                 })
+                // 用于解决默认的 Json 库无法解析 JsonPatchDocument<> 类型的问题
+                .AddNewtonsoftJson(setup =>
+                {
+                    setup.SerializerSettings.ContractResolver =
+                        new CamelCasePropertyNamesContractResolver();
+                })
                 // 启用 XML 格式支持
                 .AddXmlDataContractSerializerFormatters()
+                // 自定义模型验证错误信息
                 .ConfigureApiBehaviorOptions(setup =>
                 {
-                    // 自定义模型验证错误信息
                     setup.InvalidModelStateResponseFactory = context =>
                     {
                         var detail = new ValidationProblemDetails(context.ModelState)

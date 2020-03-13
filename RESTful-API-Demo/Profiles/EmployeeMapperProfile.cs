@@ -22,6 +22,7 @@ namespace RESTful_API_Demo.Profiles
 
             this.CreateMap<EmployeeCreateDTO, Employee>();
             this.CreateMap<EmployeeUpdateDTO, Employee>();
+            this.CreateMap<Employee, EmployeeUpdateDTO>();
         }
     }
 }

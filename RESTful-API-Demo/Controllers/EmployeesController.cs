@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using RESTful_API_Demo.DTOS;
 using RESTful_API_Demo.Entities;
@@ -105,6 +106,34 @@ namespace RESTful_API_Demo.Controllers
 
                 return this.NoContent();
             }
+        }
+
+        // 请求的 Content-Type 值为 "application/json-patch+json"
+        [HttpPatch("{employeeId}")]
+        public async Task<IActionResult> PartiallyUpdateEmployeeForCompany(
+            [FromRoute]Guid companyId,
+            [FromRoute]Guid employeeId,
+            [FromBody]JsonPatchDocument<EmployeeUpdateDTO> jsonPatchDocument)
+        {
+            if (!await this.companyRepository.CompanyExistAsync(companyId))
+            {
+                return this.NotFound();
+            }
+
+            var employee = await this.companyRepository.GetEmployeeAsync(companyId, employeeId);
+            if (employee == null)
+            {
+                return this.NotFound();
+            }
+
+            // 将 JasnPatchDocument 的操作应用到 DTO 对象
+            var employeeUpdateDTO = this.mapper.Map<EmployeeUpdateDTO>(employee);
+            jsonPatchDocument.ApplyTo(employeeUpdateDTO);
+            this.mapper.Map(employeeUpdateDTO, employee);
+
+            this.companyRepository.UpdateEmployee(employee);
+            await this.companyRepository.SaveAsync();
+            return NoContent();
         }
     }
 }
