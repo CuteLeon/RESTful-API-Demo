@@ -112,7 +112,7 @@ namespace RESTful_API_Demo.Services
             return await this.context.Companies.AnyAsync(x => x.Id == companyId);
         }
 
-        public async Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, string genderDisplay, string keyword)
+        public async Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, EmployeeParameter parameter)
         {
             if (Guid.Empty == companyId)
                 throw new ArgumentNullException(nameof(companyId));
@@ -120,18 +120,18 @@ namespace RESTful_API_Demo.Services
             var result = this.context.Employees
                 .Where(x => x.CompanyId == companyId);
 
-            if (!string.IsNullOrEmpty(genderDisplay) &&
-                Enum.TryParse<Gender>(genderDisplay.Trim(), out var gender))
+            if (!string.IsNullOrEmpty(parameter.Gender) &&
+                Enum.TryParse<Gender>(parameter.Gender.Trim(), out var gender))
             {
                 result = result.Where(x => x.Gender == gender);
             }
 
-            if (!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(parameter.SearchTerm))
             {
                 result = result.Where(x =>
-                    x.EmployeeNo.Contains(keyword) ||
-                    x.FirstName.Contains(keyword) ||
-                    x.LastName.Contains(keyword));
+                    x.EmployeeNo.Contains(parameter.SearchTerm) ||
+                    x.FirstName.Contains(parameter.SearchTerm) ||
+                    x.LastName.Contains(parameter.SearchTerm));
             }
 
             result = result.OrderBy(x => x.EmployeeNo);

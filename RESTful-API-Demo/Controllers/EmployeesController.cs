@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RESTful_API_Demo.DTOS;
 using RESTful_API_Demo.Entities;
+using RESTful_API_Demo.Parameters;
 using RESTful_API_Demo.Services;
 
 namespace RESTful_API_Demo.Controllers
@@ -34,15 +35,14 @@ namespace RESTful_API_Demo.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployees(
             [FromRoute]Guid companyId,
-            [FromQuery(Name = "gender")]string genderDisplay,
-            [FromQuery(Name = "q")]string keyword)
+            [FromQuery]EmployeeParameter parameter)
         {
             if (!await this.companyRepository.CompanyExistAsync(companyId))
             {
                 return this.NotFound();
             }
 
-            var employees = await this.companyRepository.GetEmployeesAsync(companyId, genderDisplay, keyword);
+            var employees = await this.companyRepository.GetEmployeesAsync(companyId, parameter);
             var employeeDTOs = this.mapper.Map<IEnumerable<EmployeeDTO>>(employees);
             return this.Ok(employeeDTOs);
         }
