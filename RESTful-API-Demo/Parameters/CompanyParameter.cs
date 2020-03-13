@@ -15,5 +15,6 @@ namespace RESTful_API_Demo.Parameters
             get => pageSize;
             set => this.pageSize = Math.Min(value, MaxPageSize);
         }
+        public string OrderBy { get; set; } = "name";
     }
 }

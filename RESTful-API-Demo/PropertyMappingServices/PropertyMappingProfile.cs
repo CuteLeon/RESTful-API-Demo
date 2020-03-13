@@ -38,7 +38,13 @@ namespace RESTful_API_Demo.PropertyMappingServices
         public static IPropertyMappingService ConfigCompanyPropertyMappings(
             this IPropertyMappingService propertyMappingService)
         {
+            var propertyMapping = new PropertyMapping<CompanyDTO, Company>(new Dictionary<string, PropertyMappingValue>
+            {
+                { nameof(CompanyDTO.Id).ToLower(), new PropertyMappingValue(new []{ nameof(Company.Id)})},
+                { nameof(CompanyDTO.Name).ToLower(), new PropertyMappingValue(new []{ nameof(Company.Name)})},
+            });
 
+            propertyMappingService.AddPropertyMapping(propertyMapping);
             return propertyMappingService;
         }
     }

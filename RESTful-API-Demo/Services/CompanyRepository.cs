@@ -50,6 +50,9 @@ namespace RESTful_API_Demo.Services
                     x.Introduction.Contains(parameter.SearchTerm));
             }
 
+            var propertyMapping = this.propertyMappingService.GetPropertyMapping<CompanyDTO, Company>();
+            result = result.ApplySort(parameter.OrderBy, propertyMapping.PropertyMappingValueDictionary);
+
             var pagedList = await PagedList<Company>.CreateAsync(
                 result,
                 parameter.PageNumber,
