@@ -68,7 +68,7 @@ namespace RESTful_API_Demo.Controllers
         public async Task<ActionResult<CompanyDTO>> CreateCompany(
             [FromBody]CompanyCreateDTO companyCreateDTO)
         {
-            var company = mapper.Map<Company>(companyCreateDTO);
+            var company = this.mapper.Map<Company>(companyCreateDTO);
             this.companyRepository.AddCompany(company);
             await this.companyRepository.SaveAsync();
             var companyDTO = this.mapper.Map<CompanyDTO>(company);
@@ -84,8 +84,22 @@ namespace RESTful_API_Demo.Controllers
         [HttpOptions]
         public async Task<ActionResult> GetCompaniesOptions()
         {
-            Response.Headers.Add("Allow", "GET,POST,OPTIONS");
+            this.Response.Headers.Add("Allow", "GET,POST,OPTIONS");
             return this.Ok();
+        }
+
+        [HttpDelete("{companyId}")]
+        public async Task<ActionResult> DeleteCompany(Guid companyId)
+        {
+            var company = await this.companyRepository.GetCompanyAsync(companyId);
+            if (company == null)
+            {
+                return this.NotFound();
+            }
+
+            this.companyRepository.DeleteCompany(company);
+            await this.companyRepository.SaveAsync();
+            return this.NoContent();
         }
     }
 }

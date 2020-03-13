@@ -9,8 +9,8 @@ using RESTful_API_Demo.Data;
 namespace RESTful_API_Demo.Migrations
 {
     [DbContext(typeof(RoutineDBContext))]
-    [Migration("20200311133028_AddEmployeeSeedData")]
-    partial class AddEmployeeSeedData
+    [Migration("20200313075409_InitMigration")]
+    partial class InitMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -122,7 +122,7 @@ namespace RESTful_API_Demo.Migrations
                     b.HasOne("RESTful_API_Demo.Entities.Company", "Company")
                         .WithMany("Employees")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

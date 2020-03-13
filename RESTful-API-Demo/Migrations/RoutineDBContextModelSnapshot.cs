@@ -120,7 +120,7 @@ namespace RESTful_API_Demo.Migrations
                     b.HasOne("RESTful_API_Demo.Entities.Company", "Company")
                         .WithMany("Employees")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618
