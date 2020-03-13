@@ -409,3 +409,13 @@ if (!this.ModelState.IsValid)
 ```json
 { "op": "test", "path": "/best_biscuit/name", "value": "cChoco Leibniz" }
 ```
+
+# 分页
+
+​	集合资源的数量往往较大，需要对数据进行翻页，同时也能避免性能问题。
+
+​	可以通过 QueryString 传递翻页相关参数，每页条目数需要进行控制，并且要默认启用分页功能。
+
+​	应该对底层的数据存储进行分页，而不是将所有数据读取到内存后再分页返回。
+
+​	

@@ -26,17 +26,25 @@ namespace RESTful_API_Demo.Services
             }
 
             var result = this.context.Companies.AsQueryable();
+
+            // 过滤
             if (!string.IsNullOrEmpty(parameter.CompanyName))
             {
                 result = result.Where(x => x.Name.Contains(parameter.CompanyName));
             }
 
+            // 搜索
             if (!string.IsNullOrEmpty(parameter.SearchTerm))
             {
                 result = result.Where(x =>
                     x.Name.Contains(parameter.SearchTerm) ||
                     x.Introduction.Contains(parameter.SearchTerm));
             }
+
+            // 分页
+            result = result
+                .Skip((parameter.PageNumber - 1) * parameter.PageSize)
+                .Take(parameter.PageSize);
 
             return await result.ToListAsync();
         }
