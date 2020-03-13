@@ -12,7 +12,9 @@ namespace RESTful_API_Demo.PropertyMappingServices
         public IPropertyMappingService AddPropertyMapping(IPropertyMapping propertyMapping)
         {
             if (propertyMapping == null)
+            {
                 throw new ArgumentNullException(nameof(propertyMapping));
+            }
 
             this.PropertyMappings.Add(propertyMapping);
             return this;

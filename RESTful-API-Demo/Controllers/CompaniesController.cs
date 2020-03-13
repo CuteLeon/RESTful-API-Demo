@@ -45,7 +45,7 @@ namespace RESTful_API_Demo.Controllers
 
         [HttpGet(Name = nameof(GetCompanies))]
         [HttpHead]
-        public async Task<ActionResult<IEnumerable<CompanyDTO>>> GetCompanies(
+        public async Task<IActionResult> GetCompanies(
             [FromQuery]CompanyParameter parameter)
         {
             var companiesPagedList = await this.companyRepository.GetCompaniesAsync(parameter);
@@ -66,7 +66,8 @@ namespace RESTful_API_Demo.Controllers
                 "X-Pagination",
                 JsonConvert.SerializeObject(paginationMetadata));
             var companyDtos = this.mapper.Map<IEnumerable<CompanyDTO>>(companiesPagedList);
-            return this.Ok(companyDtos);
+            var shapedCompanies = companyDtos.ShapeData(parameter.Fields);
+            return this.Ok(shapedCompanies);
         }
 
         /// <summary>
@@ -84,6 +85,7 @@ namespace RESTful_API_Demo.Controllers
                         nameof(GetCompanies),
                         new
                         {
+                            fields = parameter.Fields,
                             orderBy = parameter.OrderBy,
                             pageNumber = parameter.PageNumber - 1,
                             pageSize = parameter.PageSize,
@@ -96,6 +98,7 @@ namespace RESTful_API_Demo.Controllers
                         nameof(GetCompanies),
                         new
                         {
+                            fields = parameter.Fields,
                             orderBy = parameter.OrderBy,
                             pageNumber = parameter.PageNumber + 1,
                             pageSize = parameter.PageSize,
@@ -108,6 +111,7 @@ namespace RESTful_API_Demo.Controllers
                         nameof(GetCompanies),
                         new
                         {
+                            fields = parameter.Fields,
                             orderBy = parameter.OrderBy,
                             pageNumber = parameter.PageNumber,
                             pageSize = parameter.PageSize,
@@ -118,7 +122,7 @@ namespace RESTful_API_Demo.Controllers
         }
 
         [HttpGet("{companyId}", Name = nameof(GetCompany))]
-        public async Task<IActionResult> GetCompany(Guid companyId)
+        public async Task<IActionResult> GetCompany(Guid companyId, string fields)
         {
             var company = await this.companyRepository.GetCompanyAsync(companyId);
             if (company == null)
@@ -127,7 +131,8 @@ namespace RESTful_API_Demo.Controllers
             }
 
             var companyDto = this.mapper.Map<CompanyDTO>(company);
-            return this.Ok(companyDto);
+            var shapedCompany = companyDto.ShapeData(fields);
+            return this.Ok(shapedCompany);
         }
 
         [HttpPost]

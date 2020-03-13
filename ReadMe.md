@@ -427,3 +427,12 @@ if (!this.ModelState.IsValid)
 # 排序
 
 ​	为资源排序。排序条件应用到面向外部的 DTO 上；
+
+# 数据塑性
+
+​	允许API消费者选择要返回的资源字段。仅针对资源的字段，而非资源的更低层次的字段。
+
+```
+/api/companies?fields=id,name
+```
+
