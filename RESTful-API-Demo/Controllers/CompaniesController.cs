@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using RESTful_API_Demo.Assists;
 using RESTful_API_Demo.DTOS;
 using RESTful_API_Demo.Entities;
 using RESTful_API_Demo.Parameters;
@@ -41,14 +43,75 @@ namespace RESTful_API_Demo.Controllers
                 throw new ArgumentNullException(nameof(mapper));
         }
 
-        [HttpGet]
+        [HttpGet(Name = nameof(GetCompanies))]
         [HttpHead]
         public async Task<ActionResult<IEnumerable<CompanyDTO>>> GetCompanies(
             [FromQuery]CompanyParameter parameter)
         {
-            var companies = await this.companyRepository.GetCompaniesAsync(parameter);
-            var companyDtos = this.mapper.Map<IEnumerable<CompanyDTO>>(companies);
+            var companiesPagedList = await this.companyRepository.GetCompaniesAsync(parameter);
+            // 构造分页信息
+            var previousPageLink = companiesPagedList.HasPrevious ? this.CreateCompnaiesUri(parameter, UriTypes.Previous) : default;
+            var nextPageLink = companiesPagedList.HasNext ? this.CreateCompnaiesUri(parameter, UriTypes.Next) : default;
+            var paginationMetadata = new
+            {
+                currentPage = companiesPagedList.CurrentPage,
+                totalPages = companiesPagedList.TotalPages,
+                pageSize = companiesPagedList.PageSize,
+                totalCount = companiesPagedList.TotalCount,
+                previousPageLink = previousPageLink,
+                nextPageLink = nextPageLink,
+            };
+            // 将分页信息记录到响应头
+            this.Response.Headers.Add(
+                "X-Pagination",
+                JsonConvert.SerializeObject(paginationMetadata));
+            var companyDtos = this.mapper.Map<IEnumerable<CompanyDTO>>(companiesPagedList);
             return this.Ok(companyDtos);
+        }
+
+        /// <summary>
+        /// 创建前一页和后一页的链接
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <param name="uriType"></param>
+        /// <returns></returns>
+        private string CreateCompnaiesUri(CompanyParameter parameter, UriTypes uriType)
+        {
+            switch (uriType)
+            {
+                case UriTypes.Previous:
+                    return this.Url.Link(
+                        nameof(GetCompanies),
+                        new
+                        {
+                            pageNumber = parameter.PageNumber - 1,
+                            pageSize = parameter.PageSize,
+                            companyName = parameter.CompanyName,
+                            searchTerm = parameter.SearchTerm,
+                        });
+
+                case UriTypes.Next:
+                    return this.Url.Link(
+                        nameof(GetCompanies),
+                        new
+                        {
+                            pageNumber = parameter.PageNumber + 1,
+                            pageSize = parameter.PageSize,
+                            companyName = parameter.CompanyName,
+                            searchTerm = parameter.SearchTerm,
+                        });
+
+                default:
+                    return this.Url.Link(
+                        nameof(GetCompanies),
+                        new
+                        {
+                            pageNumber = parameter.PageNumber,
+                            pageSize = parameter.PageSize,
+                            companyName = parameter.CompanyName,
+                            searchTerm = parameter.SearchTerm,
+                        });
+            }
         }
 
         [HttpGet("{companyId}", Name = nameof(GetCompany))]
