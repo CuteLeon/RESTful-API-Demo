@@ -127,22 +127,39 @@ namespace RESTful_API_Demo.Controllers
             var employee = await this.companyRepository.GetEmployeeAsync(companyId, employeeId);
             if (employee == null)
             {
-                return this.NotFound();
-            }
+                var employeeUpdateDTO = new EmployeeUpdateDTO();
+                jsonPatchDocument.ApplyTo(employeeUpdateDTO);
+                if (!this.TryValidateModel(employeeUpdateDTO))
+                {
+                    return this.ValidationProblem(this.ModelState);
+                }
 
-            // 将 JasnPatchDocument 的操作应用到 DTO 对象
-            var employeeUpdateDTO = this.mapper.Map<EmployeeUpdateDTO>(employee);
-            jsonPatchDocument.ApplyTo(employeeUpdateDTO);
-            if (!this.TryValidateModel(employeeUpdateDTO))
+                employee = this.mapper.Map<Employee>(employeeUpdateDTO);
+                employee.Id = employeeId;
+                this.companyRepository.AddEmployee(companyId, employee);
+                await this.companyRepository.SaveAsync();
+                var employeeDTO = this.mapper.Map<EmployeeDTO>(employee);
+                return this.CreatedAtAction(
+                    nameof(GetEmployeeForCompany),
+                    new { companyId = companyId, employeeId = employee.Id },
+                    employeeDTO);
+            }
+            else
             {
-                return this.ValidationProblem(this.ModelState);
+                // 将 JasnPatchDocument 的操作应用到 DTO 对象
+                var employeeUpdateDTO = this.mapper.Map<EmployeeUpdateDTO>(employee);
+                jsonPatchDocument.ApplyTo(employeeUpdateDTO);
+                if (!this.TryValidateModel(employeeUpdateDTO))
+                {
+                    return this.ValidationProblem(this.ModelState);
+                }
+
+                this.mapper.Map(employeeUpdateDTO, employee);
+
+                this.companyRepository.UpdateEmployee(employee);
+                await this.companyRepository.SaveAsync();
+                return this.NoContent();
             }
-
-            this.mapper.Map(employeeUpdateDTO, employee);
-
-            this.companyRepository.UpdateEmployee(employee);
-            await this.companyRepository.SaveAsync();
-            return this.NoContent();
         }
 
         // 覆写 ValidationProblem 以在模型验证错误时使用已经在 StartUp 配置的行为
