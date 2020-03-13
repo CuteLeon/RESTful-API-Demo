@@ -4,6 +4,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using RESTful_API_Demo.DTOS;
 using RESTful_API_Demo.Entities;
 using RESTful_API_Demo.Services;
@@ -52,7 +56,7 @@ namespace RESTful_API_Demo.Controllers
                 return this.NotFound();
             }
 
-            var employeeDTO = mapper.Map<EmployeeDTO>(employee);
+            var employeeDTO = this.mapper.Map<EmployeeDTO>(employee);
             return this.Ok(employeeDTO);
         }
 
@@ -61,7 +65,7 @@ namespace RESTful_API_Demo.Controllers
             [FromRoute]Guid companyId,
             [FromBody]EmployeeCreateDTO employeeCreateDTO)
         {
-            if (!await companyRepository.CompanyExistAsync(companyId))
+            if (!await this.companyRepository.CompanyExistAsync(companyId))
             {
                 return this.NotFound();
             }
@@ -129,11 +133,24 @@ namespace RESTful_API_Demo.Controllers
             // 将 JasnPatchDocument 的操作应用到 DTO 对象
             var employeeUpdateDTO = this.mapper.Map<EmployeeUpdateDTO>(employee);
             jsonPatchDocument.ApplyTo(employeeUpdateDTO);
+            if (!this.TryValidateModel(employeeUpdateDTO))
+            {
+                return this.ValidationProblem(this.ModelState);
+            }
+
             this.mapper.Map(employeeUpdateDTO, employee);
 
             this.companyRepository.UpdateEmployee(employee);
             await this.companyRepository.SaveAsync();
-            return NoContent();
+            return this.NoContent();
+        }
+
+        // 覆写 ValidationProblem 以在模型验证错误时使用已经在 StartUp 配置的行为
+        public override ActionResult ValidationProblem(
+            [ActionResultObjectValue] ModelStateDictionary modelStateDictionary)
+        {
+            var options = this.HttpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>();
+            return options.Value.InvalidModelStateResponseFactory(this.ControllerContext) as ActionResult;
         }
     }
 }
