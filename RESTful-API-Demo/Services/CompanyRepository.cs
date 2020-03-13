@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using RESTful_API_Demo.Assists;
 using RESTful_API_Demo.Data;
 using RESTful_API_Demo.Entities;
 using RESTful_API_Demo.Parameters;
@@ -18,7 +19,7 @@ namespace RESTful_API_Demo.Services
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<Company>> GetCompaniesAsync(CompanyParameter parameter)
+        public async Task<PagedList<Company>> GetCompaniesAsync(CompanyParameter parameter)
         {
             if (parameter == null)
             {
@@ -41,12 +42,12 @@ namespace RESTful_API_Demo.Services
                     x.Introduction.Contains(parameter.SearchTerm));
             }
 
-            // 分页
-            result = result
-                .Skip((parameter.PageNumber - 1) * parameter.PageSize)
-                .Take(parameter.PageSize);
+            var pagedList = await PagedList<Company>.CreateAsync(
+                result,
+                parameter.PageNumber,
+                parameter.PageSize);
 
-            return await result.ToListAsync();
+            return pagedList;
         }
 
         public async Task<Company> GetCompanyAsync(Guid companyId)
