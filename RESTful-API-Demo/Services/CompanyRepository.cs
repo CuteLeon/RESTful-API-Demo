@@ -134,7 +134,16 @@ namespace RESTful_API_Demo.Services
                     x.LastName.Contains(parameter.SearchTerm));
             }
 
-            result = result.OrderBy(x => x.EmployeeNo);
+            if (!string.IsNullOrEmpty(parameter.OrderBy))
+            {
+                result = parameter.OrderBy.ToLower() switch
+                {
+                    "name" => result.OrderBy(x => x.FirstName).ThenBy(x => x.LastName),
+                    "employeeno" => result.OrderBy(x => x.EmployeeNo),
+                    "gender" => result.OrderBy(x => x.Gender),
+                };
+            }
+
             return await result.ToListAsync();
         }
 

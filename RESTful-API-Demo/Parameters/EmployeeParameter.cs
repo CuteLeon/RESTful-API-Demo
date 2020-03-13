@@ -8,5 +8,7 @@ namespace RESTful_API_Demo.Parameters
 
         [FromQuery(Name = "keyword")]
         public string SearchTerm { get; set; }
+
+        public string OrderBy { get; set; } = "Name";
     }
 }
