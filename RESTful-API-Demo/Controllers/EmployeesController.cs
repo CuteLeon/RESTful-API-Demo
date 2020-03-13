@@ -169,5 +169,24 @@ namespace RESTful_API_Demo.Controllers
             var options = this.HttpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>();
             return options.Value.InvalidModelStateResponseFactory(this.ControllerContext) as ActionResult;
         }
+
+        [HttpDelete("{employeeId}")]
+        public async Task<IActionResult> DeleteEmployeeForCompany(Guid companyId, Guid employeeId)
+        {
+            if (!await this.companyRepository.CompanyExistAsync(companyId))
+            {
+                return this.NotFound();
+            }
+
+            var employee = await this.companyRepository.GetEmployeeAsync(companyId, employeeId);
+            if (employee == null)
+            {
+                return this.NotFound();
+            }
+
+            this.companyRepository.DeleteEmployee(employee);
+            await this.companyRepository.SaveAsync();
+            return this.NoContent();
+        }
     }
 }
