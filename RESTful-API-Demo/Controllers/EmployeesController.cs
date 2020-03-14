@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -17,7 +18,7 @@ namespace RESTful_API_Demo.Controllers
 {
     [ApiController]
     [Route("api/companies/{companyId}/employees")]
-    [ResponseCache(CacheProfileName = "120sCacheProfile")]
+    // [ResponseCache(CacheProfileName = "120sCacheProfile")]
     public class EmployeesController : ControllerBase
     {
         private readonly ICompanyRepository companyRepository;
@@ -49,7 +50,9 @@ namespace RESTful_API_Demo.Controllers
         }
 
         [Route("{employeeId}"), ActionName(nameof(GetEmployeeForCompany))]
-        [ResponseCache(Duration = 60)]
+        // [ResponseCache(Duration = 60)]
+        [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 1800)]
+        [HttpCacheValidation(MustRevalidate = false)]
         public async Task<ActionResult<EmployeeDTO>> GetEmployeeForCompany(Guid companyId, Guid employeeId)
         {
             var employee = await this.companyRepository.GetEmployeeAsync(companyId, employeeId);
