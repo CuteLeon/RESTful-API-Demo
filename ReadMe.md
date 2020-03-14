@@ -247,6 +247,17 @@ get /api/users?orderby=name&count=20
 
 ​	ASP.NET Core 对应的是 OutPutFormatters。
 
+## 供应商特定媒体类型
+
+​	application/json 仅仅描述了数据的格式，但是并没有表述数据的类型。可以创建新的 MediaType Vendor-specific media type 供应商特定媒体类型。
+
+​	application/vnd.mycompany.hateoas+json
+
+- vnd 是 vendor 的缩写，这是一条 mime type的原则，表示这个媒体类型是供应商特定的。
+- 接下来是自定义的Vender标识。
+- 随后是 hateoas，这是 media type 的名称，标识返回的响应里面要包含的连接
+- 最后 +json，表示是 json 格式。
+
 # 数据模型
 
 ​	模型分离为不同的类型，可以使系统更加健壮、可靠、易于进化。将数据库和API消费者同时对数据库的依赖解耦。

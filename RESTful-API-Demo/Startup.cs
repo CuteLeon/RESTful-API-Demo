@@ -1,9 +1,11 @@
 using System;
+using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,6 +64,16 @@ namespace RESTful_API_Demo
                         };
                     };
                 });
+
+            services.Configure<MvcOptions>(config =>
+            {
+                // 为 NewtonSoft.Json 输出格式化器增加自定义的 MediaType 支持
+                var newtonsoftJsonOutputFormatter = config.OutputFormatters.OfType<NewtonsoftJsonOutputFormatter>()?.FirstOrDefault();
+                if (newtonsoftJsonOutputFormatter != null)
+                {
+                    newtonsoftJsonOutputFormatter.SupportedMediaTypes.Add("application/vnd.company.hateoas+json");
+                }
+            });
 
             // 使 AutoMapper 自动发现应用域内的类型映射配置类 (Profile)
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

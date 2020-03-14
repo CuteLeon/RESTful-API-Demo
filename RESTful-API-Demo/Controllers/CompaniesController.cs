@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -135,8 +136,16 @@ namespace RESTful_API_Demo.Controllers
         }
 
         [HttpGet("{companyId}", Name = nameof(GetCompany))]
-        public async Task<IActionResult> GetCompany(Guid companyId, string fields)
+        public async Task<IActionResult> GetCompany(
+            Guid companyId,
+            string fields,
+            [FromHeader(Name = "Accept")]string mediaType)
         {
+            if (!MediaTypeHeaderValue.TryParse(mediaType, out var parsedMediaType))
+            {
+                return this.BadRequest();
+            }
+
             var company = await this.companyRepository.GetCompanyAsync(companyId);
             if (company == null)
             {
@@ -145,13 +154,22 @@ namespace RESTful_API_Demo.Controllers
 
             var companyDto = this.mapper.Map<CompanyDTO>(company);
             var shapedCompany = companyDto.ShapeData(fields);
-            var links = this.CreateLinksForCompany(companyId, fields);
-            shapedCompany.TryAdd("links", links);
 
-            return this.Ok(shapedCompany);
+
+            if (parsedMediaType.MediaType == "application/vnd.company.hateoas+json")
+            {
+                var links = this.CreateLinksForCompany(companyId, fields);
+                shapedCompany.TryAdd("links", links);
+
+                return this.Ok(shapedCompany);
+            }
+            else
+            {
+                return this.Ok(shapedCompany);
+            }
         }
 
-        [HttpPost]
+        [HttpPost(Name = nameof(CreateCompany))]
         public async Task<ActionResult<CompanyDTO>> CreateCompany(
             [FromBody]CompanyCreateDTO companyCreateDTO)
         {
@@ -198,16 +216,16 @@ namespace RESTful_API_Demo.Controllers
 
             if (string.IsNullOrEmpty(fields))
             {
-                links.Add(new LinkDTO(Url.Link(nameof(GetCompany), new { companyId }), "self", "GET"));
+                links.Add(new LinkDTO(this.Url.Link(nameof(GetCompany), new { companyId }), "self", "GET"));
             }
             else
             {
-                links.Add(new LinkDTO(Url.Link(nameof(GetCompany), new { companyId, fields }), "self", "GET"));
+                links.Add(new LinkDTO(this.Url.Link(nameof(GetCompany), new { companyId, fields }), "self", "GET"));
             }
 
-            links.Add(new LinkDTO(Url.Link(nameof(DeleteCompany), new { companyId }), "delete_company", "DELETE"));
-            links.Add(new LinkDTO(Url.Link(nameof(EmployeesController.CreateEmployeeForCompany), new { companyId }), "create_employee_for_company", "POST"));
-            links.Add(new LinkDTO(Url.Link(nameof(EmployeesController.GetEmployeeForCompany), new { companyId }), "get_employee_for_company", "GET"));
+            links.Add(new LinkDTO(this.Url.Link(nameof(DeleteCompany), new { companyId }), "delete_company", "DELETE"));
+            links.Add(new LinkDTO(this.Url.Link(nameof(EmployeesController.CreateEmployeeForCompany), new { companyId }), "create_employee_for_company", "POST"));
+            links.Add(new LinkDTO(this.Url.Link(nameof(EmployeesController.GetEmployeeForCompany), new { companyId }), "get_employee_for_company", "GET"));
             return links;
         }
     }
