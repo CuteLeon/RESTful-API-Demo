@@ -29,11 +29,14 @@ namespace RESTful_API_Demo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCaching();
+
             services
                 .AddControllers(setup =>
                 {
                     // 自动对无法接受的 Accept Header 返回 406 代码
                     setup.ReturnHttpNotAcceptable = true;
+                    setup.CacheProfiles.Add("120sCacheProfile", new CacheProfile() { Duration = 120 });
                 })
                 // 用于解决默认的 Json 库无法解析 JsonPatchDocument<> 类型的问题
                 .AddNewtonsoftJson(setup =>
@@ -106,6 +109,8 @@ namespace RESTful_API_Demo
                     });
                 });
             }
+
+            app.UseResponseCaching();
 
             app.UseHttpsRedirection();
 
