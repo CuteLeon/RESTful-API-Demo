@@ -472,3 +472,12 @@ if (!this.ModelState.IsValid)
 <a href="uri" rel="type" type="media type">
 ```
 
+# API 版本控制
+
+​	常见版本控制：
+
+- api/v1/companies
+- api/companies?api-version=v1
+- 自定义Header："api-version"=v1\
+
+ Roy Fielding 博士并不建议做 API 版本管理，因为大部分请求和响应的数据差异都可以通过 HATEOAS 实现控制。
