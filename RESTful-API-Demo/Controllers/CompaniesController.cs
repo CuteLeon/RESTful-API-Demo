@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using RESTful_API_Demo.ActionConstraints;
 using RESTful_API_Demo.Assists;
 using RESTful_API_Demo.DTOS;
 using RESTful_API_Demo.Entities;
@@ -173,6 +174,8 @@ namespace RESTful_API_Demo.Controllers
         }
 
         [HttpPost(Name = nameof(CreateCompany))]
+        [RequestHeaderMatchsMediaType("Content-Type", "application/json", "application/vnd.company.hateoas+json")]
+        [Consumes("application/json", "application/vnd.company.hateoas+json")]
         public async Task<ActionResult<CompanyDTO>> CreateCompany(
             [FromBody]CompanyCreateDTO companyCreateDTO)
         {

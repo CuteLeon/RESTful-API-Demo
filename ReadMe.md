@@ -258,7 +258,7 @@ get /api/users?orderby=name&count=20
 - 随后是 hateoas，这是 media type 的名称，标识返回的响应里面要包含的连接
 - 最后 +json，表示是 json 格式。
 
-  由请求在 Accept 头写入希望返回的数据类型，由服务端判断此类型以返回对应类型的数据即可。
+  由请求在 Content-Type 和 Accept 头写入数据类型，由服务端判断此类型以处理货返回对应类型的数据即可。
 
 # 数据模型
 
