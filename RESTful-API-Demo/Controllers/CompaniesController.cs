@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -67,6 +68,17 @@ namespace RESTful_API_Demo.Controllers
                 JsonConvert.SerializeObject(paginationMetadata));
             var companyDtos = this.mapper.Map<IEnumerable<CompanyDTO>>(companiesPagedList);
             var shapedCompanies = companyDtos.ShapeData(parameter.Fields);
+            shapedCompanies = shapedCompanies
+                .Select(shapedCompany =>
+                {
+                    var dictionary = shapedCompany as IDictionary<string, object>;
+                    dictionary.Add(
+                        "links",
+                        this.CreateLinksForCompany(
+                            (Guid)dictionary[nameof(CompanyDTO.Id)],
+                            null));
+                    return shapedCompany;
+                }).ToList();
             return this.Ok(shapedCompanies);
         }
 
@@ -106,6 +118,7 @@ namespace RESTful_API_Demo.Controllers
                             searchTerm = parameter.SearchTerm,
                         });
 
+                case UriTypes.Current:
                 default:
                     return this.Url.Link(
                         nameof(GetCompanies),
@@ -132,6 +145,9 @@ namespace RESTful_API_Demo.Controllers
 
             var companyDto = this.mapper.Map<CompanyDTO>(company);
             var shapedCompany = companyDto.ShapeData(fields);
+            var links = this.CreateLinksForCompany(companyId, fields);
+            shapedCompany.TryAdd("links", links);
+
             return this.Ok(shapedCompany);
         }
 
@@ -143,13 +159,16 @@ namespace RESTful_API_Demo.Controllers
             this.companyRepository.AddCompany(company);
             await this.companyRepository.SaveAsync();
             var companyDTO = this.mapper.Map<CompanyDTO>(company);
+            var links = this.CreateLinksForCompany(company.Id, null);
+            var shapedCompany = companyDTO.ShapeData(null);
+            shapedCompany.TryAdd("links", links);
 
             // CreatedAtRoute 可以在响应的Location头返回一个路由(使用RouteName定义)用于定位新创建的资源
             return this.CreatedAtRoute(
                 nameof(GetCompany),
                 // 匿名类型的成员名称需要与路由模板的参数匹配
                 new { companyId = company.Id },
-                companyDTO);
+                shapedCompany);
         }
 
         [HttpOptions]
@@ -159,7 +178,7 @@ namespace RESTful_API_Demo.Controllers
             return this.Ok();
         }
 
-        [HttpDelete("{companyId}")]
+        [HttpDelete("{companyId}", Name = nameof(DeleteCompany))]
         public async Task<ActionResult> DeleteCompany(Guid companyId)
         {
             var company = await this.companyRepository.GetCompanyAsync(companyId);
@@ -171,6 +190,25 @@ namespace RESTful_API_Demo.Controllers
             this.companyRepository.DeleteCompany(company);
             await this.companyRepository.SaveAsync();
             return this.NoContent();
+        }
+
+        private IEnumerable<LinkDTO> CreateLinksForCompany(Guid companyId, string fields)
+        {
+            var links = new List<LinkDTO>();
+
+            if (string.IsNullOrEmpty(fields))
+            {
+                links.Add(new LinkDTO(Url.Link(nameof(GetCompany), new { companyId }), "self", "GET"));
+            }
+            else
+            {
+                links.Add(new LinkDTO(Url.Link(nameof(GetCompany), new { companyId, fields }), "self", "GET"));
+            }
+
+            links.Add(new LinkDTO(Url.Link(nameof(DeleteCompany), new { companyId }), "delete_company", "DELETE"));
+            links.Add(new LinkDTO(Url.Link(nameof(EmployeesController.CreateEmployeeForCompany), new { companyId }), "create_employee_for_company", "POST"));
+            links.Add(new LinkDTO(Url.Link(nameof(EmployeesController.GetEmployeeForCompany), new { companyId }), "get_employee_for_company", "GET"));
+            return links;
         }
     }
 }

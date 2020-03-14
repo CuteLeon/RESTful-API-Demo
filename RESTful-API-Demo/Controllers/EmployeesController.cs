@@ -32,7 +32,7 @@ namespace RESTful_API_Demo.Controllers
                 throw new ArgumentNullException(nameof(mapper));
         }
 
-        [HttpGet]
+        [HttpGet(Name = nameof(GetEmployeeForCompany))]
         public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployees(
             [FromRoute]Guid companyId,
             [FromQuery]EmployeeParameter parameter)
@@ -60,7 +60,7 @@ namespace RESTful_API_Demo.Controllers
             return this.Ok(employeeDTO);
         }
 
-        [HttpPost]
+        [HttpPost(Name = nameof(CreateEmployeeForCompany))]
         public async Task<ActionResult<EmployeeDTO>> CreateEmployeeForCompany(
             [FromRoute]Guid companyId,
             [FromBody]EmployeeCreateDTO employeeCreateDTO)

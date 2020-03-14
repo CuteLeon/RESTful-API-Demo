@@ -2,7 +2,8 @@
 {
     public enum UriTypes
     {
-        Previous = 0,
-        Next = 1,
+        Current = 0,
+        Previous = 1,
+        Next = 2,
     }
 }

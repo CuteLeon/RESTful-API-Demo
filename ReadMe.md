@@ -436,3 +436,26 @@ if (!this.ModelState.IsValid)
 /api/companies?fields=id,name
 ```
 
+​	可以参考微软的 OData 协议标准。
+
+# HATEOAS
+
+> Hypermedia as the Engine of Application State
+>
+> 如果在部署的时候，客户端吧他们的控制都嵌入了设计中，那么他们就无法获得可进化性，控制必须可以实时的被发现，这就是超媒体所能做到的。—— Roy Fielding
+
+​	是 RESTful API 最复杂的约束，也是构建成熟 RESTful API 的核心。其能够打破客户端与服务端的严格契约，使得客户端更加智能和自适应，也使 RESTful API 服务本身的演化更容易。
+
+​	可以给响应添加一个额外的属性 links，而客户端程序只需要检查这些链接即可。
+
+​	JSON 和 XML 并没有展示 link 的概念，但是 HTML 却可以。
+
+```html
+<!--
+    href => uri
+    rel => 描述link和资源的关系
+    type => 可选，表示媒体类型
+-->
+<a href="uri" rel="type" type="media type">
+```
+
