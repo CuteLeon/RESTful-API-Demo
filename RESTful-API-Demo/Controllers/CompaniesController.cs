@@ -135,6 +135,9 @@ namespace RESTful_API_Demo.Controllers
             }
         }
 
+        [Produces(
+            "application/json",
+            "application/vnd/company.hateoas+json")]
         [HttpGet("{companyId}", Name = nameof(GetCompany))]
         public async Task<IActionResult> GetCompany(
             Guid companyId,
